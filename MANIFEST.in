@@ -1,0 +1,4 @@
+include README.rst
+include monitor/README.md
+recursive-include monitor/commands *
+recursive-include monitor/core *

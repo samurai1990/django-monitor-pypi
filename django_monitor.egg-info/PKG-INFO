@@ -1,0 +1,77 @@
+Metadata-Version: 1.2
+Name: django-monitor
+Version: 0.1
+Summary: A Django app to conduct Web-based monitor.
+Home-page: UNKNOWN
+Author: Samurai
+Author-email: yourname@example.com
+License: UNKNOWN
+Description: =====
+        Monitor
+        =====
+        
+        Monitor is a Django app to conduct Web-based monitor. For each question,
+        visitors can choose between a fixed number of answers.
+        
+        Detailed documentation is in the "docs" directory.
+        
+        Quick start
+        -----------
+        
+        1. Add "monitor" to your INSTALLED_APPS setting like this::
+        
+            INSTALLED_APPS = [
+                ...
+                'monitor',
+            ]
+        
+        2. Include the monitor URLconf in your project urls.py like this::
+        
+            path('monitor/', include('monitor.urls')),
+        
+        3. write in file dbrouter.py ::
+            ``
+            from monitor.models import CeleryTask, CeleryWorker
+        
+        
+        class DbRouter:
+            def db_for_read(self, model, **hints):
+                if model == CeleryTask or model == CeleryWorker:
+                    return 'monitor'
+                return 'default'
+        
+            def db_for_write(self, model, **hints):
+                if model == CeleryTask or model == CeleryWorker:
+                    return 'monitor'
+                return 'default'
+        
+            def allow_relation(self, obj1, obj2, **hints):
+                return True
+        
+            def allow_migrate(self, db, app_label, model_name=None, **hints):
+                if app_label == 'monitor':
+                    return db == 'monitor'
+                return True
+            ``
+        4. set config db router and config monitor databse in settings.py ::
+            `DATABASE_ROUTERS = ('${projects name}.dbrouter.DbRouter',)`
+        
+        3. Run ``python manage.py migrate`` to create the monitor models.
+        
+        4. Start the development server and visit http://127.0.0.1:8000/admin/
+           to create a poll (you'll need the Admin app enabled).
+        
+        5. Visit http://127.0.0.1:8000/monitor/ to participate in the poll.
+Platform: UNKNOWN
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 3.2
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Requires-Python: >=3.6
